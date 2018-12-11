@@ -16,7 +16,7 @@ Vue.use(ElementUI);
 
 
 import axios from "axios"
-Vue.use(axios);
+//Vue.use(axios);
 Vue.prototype.axios=axios;
 
 

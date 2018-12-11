@@ -54,7 +54,8 @@ data(){
      var url="http://127.0.0.1:5000/api/getvideo?size=12&num="+this.Num;
      this.axios.get(url).then(res=>{
        console.log(res);
-       this.list=res.data.data;
+        this.list=this.list.concat(res.data.data);
+
      })
 
 
