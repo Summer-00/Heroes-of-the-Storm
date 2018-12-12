@@ -31,12 +31,22 @@ router.post("/postapi",(req,res)=>{
 })
 
 //分页查询
+router.get("/getabout",(req,res)=>{
+
+    var sql="SELECT title,video_url,img_url FROM video LIMIT ?,? "
+    pool.query(sql,[0,2],(err,result)=>{
+        if(err) throw err;
+        res.send(result);
+    })
+
+})
 router.get("/getvideo",(req,res)=>{
     var num= parseInt(req.query.num);//页码
     var size=parseInt(req.query.size); //大小
     if(!num){num=1};
     if(!size){size=12};
     var obj={};
+    obj.about="http://127.0.0.1:5000/about.png"
     var flag=0
     var sql="SELECT count(id)AS c FROM video "
     pool.query(sql,[size],(err,result)=>{
@@ -49,7 +59,7 @@ router.get("/getvideo",(req,res)=>{
         }
     })
     var sql="SELECT title,video_url,img_url FROM video LIMIT ?,? "
-    var offset=parseInt((num-1)*size);
+    var offset=parseInt((num-1)*size+2);
     pool.query(sql,[offset,size],(err,result)=>{
         if(err)throw err;
         flag+=50;

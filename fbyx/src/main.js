@@ -14,12 +14,18 @@ Vue.use(ElementUI);
 // import VueSource from 'vue-source'
 // Vue.use(VueSource)
 
+import VideoPlayer from "vue-video-player"
+require('video.js/dist/video-js.css')
+require('vue-video-player/src/custom-theme.css')
+Vue.use(VideoPlayer);
 
 import axios from "axios"
 //Vue.use(axios);
 Vue.prototype.axios=axios;
 
-
+import{Button,Dialog}from"element-ui"
+Vue.component(Button.name,Button)
+Vue.component(Dialog.name,Dialog)
 
 Vue.config.productionTip = false
 
