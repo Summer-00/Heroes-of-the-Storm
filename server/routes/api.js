@@ -38,9 +38,12 @@ router.post("/postimg",(req,res)=>{
     for(key in video){
         arr.push(video[key]);
     } 
+    var arr1=arr.slice(0,20);
+    var arr2=arr.slice(20,40);
+    var arr3=arr.slice(40,60);
     
-    for(var j=0 ;j<arr.length;j++){
-        pool.query("INSERT INTO `gameimg`(`id`,`title`,`gameimg_url`) VALUES (null,?,?)",["游戏截图",arr[j]],(err,result)=>{
+    for(var j=0 ;j<arr1.length;j++){
+        pool.query("INSERT INTO `playerimg`(`id`,`gameimg_url`,`bgimg_url`,`title`) VALUES (null,?,?,?)",[arr1[j],arr2[j],arr3[j]],(err,result)=>{
             if(err)throw err;
         })
     }
@@ -108,7 +111,7 @@ router.get("/getgameimg",(req,res)=>{
 
         }
     })
-    var sql="SELECT title,gameimg_url FROM gameimg LIMIT ?,? "
+    var sql="SELECT title,gameimg_url,bgimg_url FROM gameimg LIMIT ?,? "
     var offset=parseInt((num-1)*size);
     pool.query(sql,[offset,size],(err,result)=>{
         if(err)throw err;

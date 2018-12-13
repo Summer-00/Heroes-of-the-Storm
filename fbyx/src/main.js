@@ -27,6 +27,11 @@ import{Button,Dialog}from"element-ui"
 Vue.component(Button.name,Button)
 Vue.component(Dialog.name,Dialog)
 
+// import lazyload from "vue-lazyload"
+// Vue.use(
+  // lazyload,{loading:'./static/images/load.png'}
+  // )
+
 Vue.config.productionTip = false
 
 new Vue({

@@ -2,7 +2,7 @@
     <div class="common">
     <ul>
        <li v-for="(item,index) in list" :key="item.id">
-         <a href="javascript:;" @click="play(item.gameimg_url)" >
+         <a href="javascript:;" @click="play(item.bgimg_url)" >
         <img :src="item.gameimg_url" alt="">
         <img src="http://127.0.0.1:5000/video_img/cartoon.png" alt="">
         <span :class="{active:spanActive==index}">{{item.title}}</span>
@@ -11,12 +11,14 @@
       </li>
     </ul>
    <button class="get-more" :class="{hide:btnActive}" @click="common()"> 加载更多</button>
+<div>
+  <el-dialog :visible.sync="dialogVisible">
 
-<el-dialog :visible.sync="dialogVisible">
-
-<img :src="gameimg_url_lg" alt="">
+<img  class="img-lg" :src="gameimg_url_lg" alt="">
 
 </el-dialog>
+</div>
+
 
 
   </div>
@@ -46,6 +48,16 @@ export default{
     },
     created(){
     this.common()
+    },
+    watch: {
+      dialogVisible() {
+        var t=setTimeout(()=>{
+            if(!this.dialogVisible){
+          this.gameimg_url_lg=""
+        }
+        },500)
+      
+      },
     },
     props:["url"],
     methods:{
@@ -78,6 +90,7 @@ export default{
 
 .common{
      width: 83.3333333%;
+     max-width: 1200px;
   margin: 0 auto; 
 }
 .common>ul{
@@ -101,7 +114,7 @@ export default{
   z-index: 0;
   left:0; right:0; top:0; bottom:0;
   margin:auto;
-  opacity: .6;
+  opacity: 0;
   transition: all .2s linear;
 }
  .common ul>li:hover img:nth-child(2){
@@ -167,6 +180,19 @@ export default{
 .get-more.hide{
   display: none;
 }
+.common  .img-lg{
+  width: 100%;
+  vertical-align: top;
+}
+/* .common div{
+  width: 60%;
+  /* position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0; */
+/* } */ 
+
 
 </style>
 

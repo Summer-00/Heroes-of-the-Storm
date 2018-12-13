@@ -58,10 +58,11 @@
 <imgview :url="url.gameimg"></imgview>
 
 <h3 class="c-title">玩家作品
+
 <!-- <imgview :url="url.playerimg" ></imgview> -->
 <!-- <a class="mailto" href="mailto:heroes@battlenet.com.cn">我要投稿</a> -->
 </h3>
-
+<imgview :url="url.gameimg"></imgview>
 
 <h3 class="c-title">壁纸</h3>
     </div>
@@ -201,10 +202,11 @@ body{
 }
 
 .video{
- 
+  
   background: #0d0119 url(http://127.0.0.1:5000/video_img/1_images_media_v2_bg_1.jpg) top center no-repeat;
 }
  .video .content {
+   max-width: 1200px;
   width: 83.3333333%;
   margin: 0 auto; 
 
@@ -346,7 +348,7 @@ body{
   display: none;
 }
 .video .el-dialog{
-  width: 70%;
+  width: 65%;
 }
 .video .el-dialog__body{
   padding: 0;
@@ -378,6 +380,7 @@ body{
  .video .video-js .vjs-play-control .vjs-icon-placeholder:before {
     content: "";
 }
+.video .el-dialog__wrapper {overflow: hidden;}
 
  .c-title {
     font-size: 54px;

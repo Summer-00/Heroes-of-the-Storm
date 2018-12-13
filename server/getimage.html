@@ -314,24 +314,34 @@
 </body>
 <script src="jquery-1.11.3.js"></script>
 <script>
-var img=document.querySelectorAll("[data-img] a img");
-console.log(img)
+var img=document.querySelectorAll("[data-img] a>img");
+var lgimg=document.querySelectorAll("[data-img]");
+console.log(lgimg)
 var gameimg=[];
-var obj={};
+var bgimg=[];
+var title=[];
+
 
 for(var i=0;i<img.length;i++){
     // console.log(i)
     gameimg.push(img[i].currentSrc)
+    bgimg.push(lgimg[i].dataset.img)
+    title.push(lgimg[i].dataset.title)
+
   }   
     
-    var obj4={...gameimg}
-    console.log(obj4);
+    var obj1={...gameimg}
+    var obj2={...bgimg}
+    var obj3={...title}
+    console.log(obj1);
+    console.log(obj2);
+    console.log(obj3);
 
     $("button").click(function(){
     $.ajax({
         url:"http://127.0.0.1:5000/api/postimg",
         type:"post",
-        data:{obj4},
+        data:{obj1,obj2,obj3},
         dataType:"json",
         success(res){
             console.log(res)
