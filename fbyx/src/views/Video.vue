@@ -7,11 +7,13 @@
            <div class="introduce">
     <ul>
       <li v-for="item in first"  :key="item.id">
-        <a href="javascript:;">
+        <a href="javascript:;"  @click="play(item.video_url)">
           <img :src="item.img_url" alt="">
         <img  src="http://127.0.0.1:5000/video_img/about.png" alt="">
         <span>{{item.title}}</span>
+      
         </a>
+        
         
       </li>
     </ul>
@@ -24,6 +26,7 @@
         <img :src="item.img_url" alt="">
         <img src="http://127.0.0.1:5000/video_img/video_play.png" alt="">
         <span :class="{active:spanActive==index}">{{item.title}}</span>
+          <div></div>
         </a>
       </li>
 
@@ -34,42 +37,55 @@
    <button class="get-more" :class="{hide:btnActive}" @click="common()"> 加载更多</button>
   </div>
   </div>
-<el-button type="text" >打开 </el-button>
+<!-- <el-button type="text" >打开 </el-button> -->
 
 <el-dialog :visible.sync="dialogVisible">
-<!-- <img src="http://heroes.nos.netease.com/a/images/2018/5/9/c942098a125a67c0dba7c70747611b47.jpg" width="100%" alt=""> -->
-  <!-- <span>这是一段信息</span> -->
-  <!-- <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-  </span> -->
-<video-player 
-class="video-player vjs-custom-skin"
+<!-- <span class="el-icon-circle-close"></span> -->
+<video-player class="video-player vjs-custom-skin"
  ref="videoPlayer"
  :playsinline=true
  :options="playerOptions"
  >
 
 </video-player>
-  
 </el-dialog>
 
 
+<h3 class="c-title">官方漫画</h3>
+ 
+
+<h3 class="c-title">游戏截图</h3>
+<imgview :url="url.gameimg"></imgview>
+
+<h3 class="c-title">玩家作品
+<!-- <imgview :url="url.playerimg" ></imgview> -->
+<!-- <a class="mailto" href="mailto:heroes@battlenet.com.cn">我要投稿</a> -->
+</h3>
+
+
+<h3 class="c-title">壁纸</h3>
     </div>
 
- 
+
  
  
 </template>
 
 <script>
+import imgview from "../components/Imgview"
 export default {
+components:{
+  imgview
+},
 data(){
   return{
     Num:0,
     Count:1,
     list:[],
     first:[],
+    url:{gameimg:"http://127.0.0.1:5000/api/getgameimg",
+    playerimg:""
+    },
     btnActive:false,
     spanActive:-1,
     dialogVisible:false,
@@ -90,7 +106,7 @@ data(){
         }],
         poster: "", //你的封面地址
         // width: document.documentElement.clientWidth,
-        notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+         notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
         controlBar: {
           timeDivider: true,
           durationDisplay: true,
@@ -98,14 +114,6 @@ data(){
           fullscreenToggle: true  //全屏按钮
         }
     }
-
-// 作者：webxing_liuxin
-// 链接：https://www.jianshu.com/p/e8e747e33ef0
-// 來源：简书
-// 简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
-
-    
- 
   }
  },
 
@@ -115,9 +123,14 @@ data(){
  },
  watch:{
   dialogVisible:function(){
-    if(!this.dialogVisible){
+    var t=setTimeout(()=>{
+      console.log(1);
+      if(!this.dialogVisible){
       this.playerOptions.sources[0].src="";
+      console.log(this.playerOptions.sources[0].src);
     }
+     },500)
+    
   } 
  },
  methods:{
@@ -131,9 +144,7 @@ data(){
           },
 
     common(){
-      this.Num++;
-       
-
+      this.Num++;  
      var url="http://127.0.0.1:5000/api/getvideo?size=12&num="+this.Num;
      this.axios.get(url).then(res=>{
        console.log(res);
@@ -207,10 +218,11 @@ body{
   flex-wrap: wrap;
   justify-content: space-between;
 }
+
 .video .content .introduce>ul>li{
-width:49%;
-border: 4px solid #254771;
-position: relative;
+  width:49%;
+  border: 4px solid #254771;
+  position: relative;
 }
 .video .content .introduce>ul>li span{
   line-height: 2;
@@ -226,18 +238,29 @@ position: relative;
     left: 0;
     z-index: 2;
 }
-.video .content ul>li img:first-child{
+.video .content .introduce ul>li img:first-child{
   height: 100%;
   width: 100%;
   /* display: inline-block; */
   vertical-align: top;
-  z-index: 0;
+  /* z-index: -1; */
   position: relative;
+}
+
+.video .content .common ul>li img:first-child{
+  height: 100%;
+  width: 100%;
+  /* display: inline-block; */
+  vertical-align: top;
+  z-index: -1;
+  position: relative;
+  /* box-shadow:0px 0px 4px 4px  #00f5fd inset; */
+ 
 }
 .video .content ul>li img:nth-child(2){
   position: absolute;
   width: 38%; 
-  z-index: 2;
+  z-index: 0;
   left:0; right:0; top:0; bottom:0;
   margin:auto;
   opacity: .6;
@@ -251,23 +274,35 @@ position: relative;
 
 .video .content ul>li a{
   z-index: 0;
+
 }
+.video .content .common ul>li a div{
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  
+  top: 0;
+  left: 0;
+}
+
+.video .content .common ul>li a div:hover{
+  box-shadow:0px 0px 5px 5px  #348bd1 inset;
+}
+
 .video .content .introduce>ul>li:hover{
-  /* border: 4px solid #bdebf3; */
   border-image: linear-gradient(#8c66c6,#bdebf3) 30 30;
 }
-
-
 .video .content .common>ul>li{
-width:24%;
-border: 4px solid #254771;
-position: relative;
-margin-top: 5px;
-overflow: hidden;
-box-shadow:0px 0px 10px  #0078ff  ;
-z-index: 1;
-
+  width:24%;
+  padding: 4px;
+  background:#254771;
+  position: relative;
+  margin-top: 5px;
+  overflow: hidden;
+  z-index: 2;
 }
+
 .video .content .common>ul>li span{
     display: inline-block;
     line-height: 2;
@@ -284,18 +319,18 @@ z-index: 1;
     z-index: 2;
     transition: all .1s linear ;
 }
-/* .video .content .common>ul>li:hover span{
 
 
-} */
- .video .content .common>ul>li span.active{
-bottom:0;
-transition: all .1s linear ;
+
+
+.video .content .common>ul>li span.active{
+  bottom:0;
+  transition: all .1s linear ;
 
  }
 
 .video .get-more{
- border: 2px solid #213566;
+    border: 2px solid #213566;
     background-color: #110b29;
     background-color: rgba(17,11,41,.9);
     box-shadow: 0 0 4px #213566;
@@ -310,6 +345,9 @@ transition: all .1s linear ;
 .video .get-more.hide{
   display: none;
 }
+.video .el-dialog{
+  width: 70%;
+}
 .video .el-dialog__body{
   padding: 0;
 }
@@ -318,28 +356,38 @@ transition: all .1s linear ;
   padding: 0
 }
 .video .vjs-custom-skin > .video-js .vjs-big-play-button{
-width: 100px!important;
-height: 100px!important;
-border-radius:50%;
-border: 0 ; 
-
-background-image: url(http://127.0.0.1:5000/video_img/video_play.png) ;
-/* background-size:contain; */
-background-repeat:no-repeat;
-opacity: .6;
-padding-bottom: 1em;
-
+  width: 100px!important;
+  height: 100px!important;
+  border-radius:50%;
+  border: 0 ; 
+  background-image: url(http://127.0.0.1:5000/video_img/video_play.png) ;
+  background-repeat:no-repeat;
+  opacity: .6;
+  padding-bottom: 1em;
 }
 .video .vjs-custom-skin > .video-js:hover .vjs-big-play-button{
   background-color: #000;
   opacity: 1;
 }
-.video video-player video-player vjs-custom-skin{
-  box-shadow:0 0 0 10px #8c66c6;
+.video .el-dialog__body{
+  box-shadow:0 0 3px 3px #8c66c6;
 }
 
-.video video-player .vjs-icon-play:before{
-  content: ""
+.video .vjs-icon-play:before, 
+.video .video-js .vjs-big-play-button .vjs-icon-placeholder:before,
+ .video .video-js .vjs-play-control .vjs-icon-placeholder:before {
+    content: "";
+}
+
+ .c-title {
+    font-size: 54px;
+    padding-top: 1em;
+    line-height: 4;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 0 10px #0078ff, 0 0 10px #0078ff;
+    width: 100%;
+    position: relative;
 }
 
 

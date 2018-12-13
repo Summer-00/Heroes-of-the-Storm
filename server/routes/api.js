@@ -30,6 +30,25 @@ router.post("/postapi",(req,res)=>{
 
 })
 
+router.post("/postimg",(req,res)=>{
+    // console.log(req.body);
+    var video=req.body;
+
+    var arr=[];
+    for(key in video){
+        arr.push(video[key]);
+    } 
+    
+    for(var j=0 ;j<arr.length;j++){
+        pool.query("INSERT INTO `gameimg`(`id`,`title`,`gameimg_url`) VALUES (null,?,?)",["游戏截图",arr[j]],(err,result)=>{
+            if(err)throw err;
+        })
+    }
+
+})
+
+
+
 //分页查询
 router.get("/getabout",(req,res)=>{
 
@@ -60,6 +79,37 @@ router.get("/getvideo",(req,res)=>{
     })
     var sql="SELECT title,video_url,img_url FROM video LIMIT ?,? "
     var offset=parseInt((num-1)*size+2);
+    pool.query(sql,[offset,size],(err,result)=>{
+        if(err)throw err;
+        flag+=50;
+        obj.data=result;
+        if(flag==100){
+            res.send(obj)
+        }
+    })
+
+    
+})
+
+router.get("/getgameimg",(req,res)=>{
+    var num= parseInt(req.query.num);//页码
+    var size=parseInt(req.query.size); //大小
+    if(!num){num=1};
+    if(!size){size=12};
+    var obj={};
+    var flag=0
+    var sql="SELECT count(id)AS c FROM gameimg "
+    pool.query(sql,[size],(err,result)=>{
+     var count = Math.ceil(result[0].c/size);
+     flag+=50;
+        obj.count=count;
+        if(flag==100){
+            res.send(obj)
+
+        }
+    })
+    var sql="SELECT title,gameimg_url FROM gameimg LIMIT ?,? "
+    var offset=parseInt((num-1)*size);
     pool.query(sql,[offset,size],(err,result)=>{
         if(err)throw err;
         flag+=50;

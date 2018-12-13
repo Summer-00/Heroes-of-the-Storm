@@ -11,7 +11,7 @@ app.listen(5000);
 
 app.use(cors({
     origin:["http://127.0.0.1:8081",
-                "http://localhost:8080",
+                "http://localhost:8081",
                 "http://localhost:5500"
             ],
                 credentials:true
