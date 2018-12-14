@@ -2,10 +2,10 @@
     <div class="common">
     <ul>
        <li v-for="(item,index) in list" :key="item.id">
-         <a href="javascript:;" @click="play(item.bgimg_url)" >
-        <img :src="item.gameimg_url" alt="">
+         <a href="javascript:;" @click="play(item.bgimg_url,index)" >
+        <img v-lazy="item.gameimg_url" alt="">
         <img src="http://127.0.0.1:5000/video_img/cartoon.png" alt="">
-        <span :class="{active:spanActive==index}">{{item.title}}</span>
+        <span>{{item.title}}</span>
         <div> </div>
         </a>
       </li>
@@ -14,8 +14,12 @@
 <div>
   <el-dialog :visible.sync="dialogVisible">
 
-<img  class="img-lg" :src="gameimg_url_lg" alt="">
-
+<img  class="img-lg" v-lazy="gameimg_url_lg" :key="this.index" alt="">
+<a @click="prev" href="javasript:;"></a>
+<a @click="next" href="javasript:;"></a>
+<span>{{title}}</span>
+<span>{{index+1}}/{{list.length}}</span>
+<a href="javasript:;"></a>
 </el-dialog>
 </div>
 
@@ -42,7 +46,9 @@ export default{
             dialogVisible:false,
             btnActive:false,
             Num:0,
-           url:""
+          //  url:""
+            index:0,
+            title:""
 
         }
     },
@@ -62,12 +68,15 @@ export default{
     props:["url"],
     methods:{
     common(){
-     this.Num++;  
-     var url=this.url+"?size=12&num="+this.Num;
+     this.Num++;
+    //  if(this.Num==1){
+    //    this.list=[];
+    //  }  
+     var url=this.url+this.Num;
      this.axios.get(url).then(res=>{
        console.log(res);
         this.list=this.list.concat(res.data.data);
-         this.Count=res.data.count-1;
+         this.Count=res.data.count;
          console.log(this.Count)
          console.log(this.Num)
          if(this.Count==this.Num){
@@ -78,9 +87,26 @@ export default{
 
 
     },
-    play(item){
+    play(item,index){
         this.gameimg_url_lg=item;
+        this.index=index;
+        console.log(this.index);
         this.dialogVisible=true;
+        this.title=this.list[index].title
+    },
+    next(){
+      if(this.index<this.list.length-1)
+      this.index++;
+      this.gameimg_url_lg=this.list[this.index].bgimg_url;
+      console.log(this.gameimg_url_lg)
+    },
+    prev(){
+      if(this.index>0){
+      this.index--;
+      this.gameimg_url_lg=this.list[this.index].bgimg_url;
+      }
+      
+
     }
 
     }
@@ -184,6 +210,71 @@ export default{
   width: 100%;
   vertical-align: top;
 }
+
+.common .el-dialog .el-dialog__body>a:nth-child(2){
+  display: block;
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  left: -110px;
+  /* background: red; */
+  top: 50%;
+  margin-top:-50px;
+   background-image: url(http://127.0.0.1:5000/video_img/move.png);
+}
+.common .el-dialog .el-dialog__body>a:nth-child(2):hover{
+  background-position: 0% 50%;
+
+}
+
+.common .el-dialog .el-dialog__body>a:nth-child(3){
+  display: block;
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  right: -110px;
+  /* background: red; */
+  top: 50%;
+  margin-top:-50px;
+  background-image: url(http://127.0.0.1:5000/video_img/move.png);
+  background-position: 100% 0%;
+  
+}
+.common .el-dialog .el-dialog__body>a:nth-child(3):hover{
+  background-position: 100% 50%;
+  
+}
+
+.common .el-dialog el-dialog__close .el-icon-close:before{
+  content: ""!important
+}
+.common .el-dialog .el-dialog__body>span:nth-child(4){
+    display:block;
+    font-size: 30px;
+    /* left: 50%; */
+    width:100%;
+    text-align: center;
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+    line-height: 80px;
+    text-shadow: 0 0 10px #0059be;
+    position: absolute;
+    top: -100px;
+}
+.common .el-dialog .el-dialog__body>span:nth-child(5){
+    color: #8366c4;
+    font-size: 16px;
+    display:block;
+    width:100%;
+    text-align: center;
+    line-height: 16px;
+    text-shadow: 0 0 10px #0059be;
+    position: absolute;
+    top: -30px;
+}
+
+
 /* .common div{
   width: 60%;
   /* position: absolute;

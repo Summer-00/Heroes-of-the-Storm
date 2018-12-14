@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 
 
+
 //1.引入element-ui
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
@@ -13,6 +14,8 @@ Vue.use(ElementUI);
 //3.引入vue-source
 // import VueSource from 'vue-source'
 // Vue.use(VueSource)
+
+
 
 import VideoPlayer from "vue-video-player"
 require('video.js/dist/video-js.css')
@@ -27,10 +30,12 @@ import{Button,Dialog}from"element-ui"
 Vue.component(Button.name,Button)
 Vue.component(Dialog.name,Dialog)
 
-// import lazyload from "vue-lazyload"
-// Vue.use(
-  // lazyload,{loading:'./static/images/load.png'}
-  // )
+import lazyload from "vue-lazyload"
+Vue.use(
+  lazyload,{
+    loading:require('./assets/load.jpg')
+  }
+  )
 
 Vue.config.productionTip = false
 

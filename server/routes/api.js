@@ -4,51 +4,7 @@ var router=express.Router();
 
 //添加路由
 
-//添加api到数据库 //获得图和视频地址的时候用一下，可以不管它
-router.post("/postapi",(req,res)=>{
-    // console.log(req.body);
-    var video=req.body;
 
-    var arr=[];
-    for(key in video){
-        arr.push(video[key]);
-    } 
-    
-
-    var arr1=arr.slice(0,122);
-    var arr2=arr.slice(122,244);
-    var arr3=arr.slice(244,366);
-    console.log(arr1);
-    console.log(arr2);
-    console.log(arr3);
-
-    for(var j=0 ;j<arr1.length;j++){
-        pool.query("INSERT INTO `video`(`id`, `title`, `video_url`, `img_url`) VALUES (null,?,?,?)",[arr1[j],arr2[j],arr3[j]],(err,result)=>{
-            if(err)throw err;
-        })
-    }
-
-})
-
-router.post("/postimg",(req,res)=>{
-    // console.log(req.body);
-    var video=req.body;
-
-    var arr=[];
-    for(key in video){
-        arr.push(video[key]);
-    } 
-    var arr1=arr.slice(0,20);
-    var arr2=arr.slice(20,40);
-    var arr3=arr.slice(40,60);
-    
-    for(var j=0 ;j<arr1.length;j++){
-        pool.query("INSERT INTO `playerimg`(`id`,`gameimg_url`,`bgimg_url`,`title`) VALUES (null,?,?,?)",[arr1[j],arr2[j],arr3[j]],(err,result)=>{
-            if(err)throw err;
-        })
-    }
-
-})
 
 
 
@@ -97,12 +53,15 @@ router.get("/getvideo",(req,res)=>{
 router.get("/getgameimg",(req,res)=>{
     var num= parseInt(req.query.num);//页码
     var size=parseInt(req.query.size); //大小
+    var object=req.query.sqlname;
+    console.log(object);
     if(!num){num=1};
     if(!size){size=12};
     var obj={};
     var flag=0
-    var sql="SELECT count(id)AS c FROM gameimg "
-    pool.query(sql,[size],(err,result)=>{
+    var sql="SELECT count(id)AS c FROM gameimg WHERE sqlname=?"
+    pool.query(sql,[object],(err,result)=>{
+        console.log(result)
      var count = Math.ceil(result[0].c/size);
      flag+=50;
         obj.count=count;
@@ -111,9 +70,9 @@ router.get("/getgameimg",(req,res)=>{
 
         }
     })
-    var sql="SELECT title,gameimg_url,bgimg_url FROM gameimg LIMIT ?,? "
+    var sql="SELECT title,gameimg_url,bgimg_url FROM gameimg WHERE sqlname=? LIMIT ?,? "
     var offset=parseInt((num-1)*size);
-    pool.query(sql,[offset,size],(err,result)=>{
+    pool.query(sql,[object,offset,size],(err,result)=>{
         if(err)throw err;
         flag+=50;
         obj.data=result;
@@ -124,6 +83,16 @@ router.get("/getgameimg",(req,res)=>{
 
     
 })
+
+
+//弹幕
+router.get("/barrage",(req,res)=>{
+    var sql="SELECT * FROM barrage WHERE av=?";
+     pool.query(sql,req.query.av,(err,result)=>{
+         if(err) throw err;
+         else res.send(result);
+     })
+ });
 
 //导出路由
 module.exports=router;

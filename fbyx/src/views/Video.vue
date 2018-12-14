@@ -21,9 +21,9 @@
 
   <div class="common">
     <ul>
-       <li v-for="(item,index) in list" :key="item.id"  @mouseenter="ShowSpan(index)" @mouseleave="HideSpan()">
+       <li v-for="(item,index) in list" :key="item.id"  @mouseenter="ShowSpan(index)"           @mouseleave="HideSpan()">
          <a href="javascript:;" @click="play(item.video_url)" >
-        <img :src="item.img_url" alt="">
+        <img v-lazy="item.img_url" alt="">
         <img src="http://127.0.0.1:5000/video_img/video_play.png" alt="">
         <span :class="{active:spanActive==index}">{{item.title}}</span>
           <div></div>
@@ -46,26 +46,44 @@
  :playsinline=true
  :options="playerOptions"
  >
-
 </video-player>
+
+<canvas width="900px" height="460px"></canvas>
+
+    <input class="input-barrage" v-model="barrageInput" type="text"><button @click="SendBarrage" class="send">发射</button>
+  
 </el-dialog>
 
 
 <h3 class="c-title">官方漫画</h3>
+
+<div class="cartoon">
+    <ul>
+       <li v-for="(item,index) in cartoon" :key="index">
+         <a :href="item.url" target="_blank">
+        <img v-lazy="item.img" alt="">
+        <img src="http://127.0.0.1:5000/video_img/cartoon.png" alt="">
+        <span>{{item.title}}</span>
+        <div></div>
+        </a>
+      </li>
+
+    
+     
+    </ul>
+</div>
+
  
 
 <h3 class="c-title">游戏截图</h3>
 <imgview :url="url.gameimg"></imgview>
 
-<h3 class="c-title">玩家作品
-
-<!-- <imgview :url="url.playerimg" ></imgview> -->
-<!-- <a class="mailto" href="mailto:heroes@battlenet.com.cn">我要投稿</a> -->
-</h3>
-<imgview :url="url.gameimg"></imgview>
+<h3 class="c-title">玩家作品</h3>
+<imgview :url="url.playerimg"></imgview>
 
 <h3 class="c-title">壁纸</h3>
-    </div>
+
+</div>
 
 
  
@@ -78,14 +96,22 @@ export default {
 components:{
   imgview
 },
-data(){
-  return{
+  data(){
+    return{
     Num:0,
     Count:1,
     list:[],
+    cartoon:[
+      { title:"漫画01 - 乌鸦王的崛起", img:"http://127.0.0.1:5000/cartoon/cartoon1.jpg",url:"http://127.0.0.1:5000/cartoon/01.pdf"},
+      { title:"漫画02 - 风暴的秘密", img:"http://127.0.0.1:5000/cartoon/cartoon2.jpg",url:"http://127.0.0.1:5000/cartoon/02.pdf"},
+      { title:"漫画03 - 君冠城的陨落", img:"http://127.0.0.1:5000/cartoon/cartoon3.jpg",url:"http://127.0.0.1:5000/cartoon/03.pdf"},
+      { title:"漫画04 - 奥菲娅", img:"http://127.0.0.1:5000/cartoon/cartoon4.jpg",url:"http://127.0.0.1:5000/cartoon/04.pdf"},
+
+    ],
     first:[],
-    url:{gameimg:"http://127.0.0.1:5000/api/getgameimg",
-    playerimg:""
+    url:{
+      gameimg:"http://127.0.0.1:5000/api/getgameimg?sqlname=gameimg&size=12&num=",
+      playerimg:"http://127.0.0.1:5000/api/getgameimg?sqlname=playerimg&size=12&num="
     },
     btnActive:false,
     spanActive:-1,
@@ -114,35 +140,42 @@ data(){
           remainingTimeDisplay: false,
           fullscreenToggle: true  //全屏按钮
         }
-    }
-  }
- },
+    },
+    barrageInput:""
+          }
+  },
 
  created() {
   this.introduce();
   this.common();
+ 
  },
  watch:{
   dialogVisible:function(){
+    // var cav=document.querySelector("canvas");
     var t=setTimeout(()=>{
       console.log(1);
       if(!this.dialogVisible){
       this.playerOptions.sources[0].src="";
+      // cav.clearRect(0,0,900,460);
       console.log(this.playerOptions.sources[0].src);
     }
      },500)
     
   } 
  },
+mounted(){
+
+},
  methods:{
-   introduce(){
+   introduce()
+    {
      var url="http://127.0.0.1:5000/api/getabout";
      this.axios.get(url).then(res=>{
        console.log(res);
        this.first=res.data;
      })
-     
-          },
+     },
 
     common(){
       this.Num++;  
@@ -172,8 +205,89 @@ data(){
     play(item){
       this.dialogVisible=true;
       this.playerOptions.sources[0].src=item;
-      console.log(this.playerOptions.sources[0].src)
+      console.log(this.playerOptions.sources[0].src),
+       this.barrage()
       
+    },
+    barrage(){
+
+        this.axios.get("http://127.0.0.1:5000/api/barrage?av=1").then(res=>{
+              var body=res.data;
+                var tg=this.dialogVisible;
+                console.log(res);            
+                //监听播放,打印弹幕
+                var cav=document.querySelector("canvas");//jq对象转换为js对象
+                var video=document.querySelector("video")
+                var ctx=cav.getContext('2d');//画笔
+                //方法2 一起加载
+                var arr = new Array(body.length);
+                var arr2=new Array(body.length)
+                for(var a = 0; a<body.length; a++){
+                    arr[a] = 0;
+                    arr2[a]=0;
+                }
+                var barrage_h=1;
+                var timer="";
+              
+                function barrage_load(){
+                    timer=setInterval(function(){
+                      console.log("timer");
+                        ctx.clearRect(0,0,900,460);
+                        for(let i =0;i<body.length;i++){
+
+                            if(video.currentTime>body[i].v_time)
+                            {     
+                              
+                                if(arr[i]==0){
+
+                                    arr2[i]=barrage_h;
+                                    barrage_h++;
+                                    if(barrage_h==8){barrage_h=1}
+                                }
+                                ctx.font="23px sans-serif";
+                                ctx.textBaseline="top";
+                                ctx.fillStyle =body[i].text_color;
+                                ctx.shadowOffsetX = 3; // 阴影Y轴偏移
+                                ctx.shadowOffsetY = 3; // 阴影X轴偏移
+                                ctx.shadowBlur = 3; // 模糊尺寸
+                                ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'; // 颜色
+                                ctx.fillText(body[i].barrage,900-arr[i],35*arr2[i]);
+                                if(barrage_h==10){
+                                    barrage_h=0
+                            }
+                                arr[i]++;
+                                if(arr[i]>900+ctx.measureText(body[i].barrage).width)
+                                {body[i].v_time=2000000000000000}
+                                console.log(arr,arr2);
+                            }
+                        }
+                    },10);
+                }
+                video.addEventListener('pause',function(){
+                                      clearInterval(timer);
+                                   });
+                video.addEventListener('play',function(){
+                                  barrage_load ();
+                                   });
+                                   
+            // }
+
+
+
+        })
+        // $.ajax({
+        //     url:"http://127.0.0.1:4000/user/get_barrage",
+        //     type:"get",
+        //     data:"av="+id,
+        //     dataType:"json",
+        //    });
+
+    },
+    BarrageSend(){
+      //发送到服务器
+      //发到屏幕
+      var barrage=this.barrageInput;
+
     }
  }
  }
@@ -205,14 +319,15 @@ body{
   
   background: #0d0119 url(http://127.0.0.1:5000/video_img/1_images_media_v2_bg_1.jpg) top center no-repeat;
 }
- .video .content {
+ .video .content,
+ .video .cartoon {
    max-width: 1200px;
   width: 83.3333333%;
   margin: 0 auto; 
 
 } 
-
-.video .content .introduce>ul,.video .common>ul{
+.video .content .introduce>ul,.video .common>ul,
+.video .cartoon>ul{
   width: 100%;
   padding: 1%;
   list-style: none;
@@ -220,14 +335,13 @@ body{
   flex-wrap: wrap;
   justify-content: space-between;
 }
-
 .video .content .introduce>ul>li{
   width:49%;
   border: 4px solid #254771;
   position: relative;
 }
 .video .content .introduce>ul>li span{
-  line-height: 2;
+    line-height: 2;
     font-size: 1.5em;
     background: #080202;
     color: #fff;
@@ -249,7 +363,8 @@ body{
   position: relative;
 }
 
-.video .content .common ul>li img:first-child{
+.video .content .common ul>li img:first-child,
+.video .cartoon ul>li img:first-child{
   height: 100%;
   width: 100%;
   /* display: inline-block; */
@@ -259,7 +374,8 @@ body{
   /* box-shadow:0px 0px 4px 4px  #00f5fd inset; */
  
 }
-.video .content ul>li img:nth-child(2){
+.video .content ul>li img:nth-child(2),
+.video .cartoon ul>li img:nth-child(2){
   position: absolute;
   width: 38%; 
   z-index: 0;
@@ -268,17 +384,17 @@ body{
   opacity: .6;
   transition: all .2s linear;
 }
-
-.video .content ul>li:hover img:nth-child(2){
+.video .content ul>li:hover img:nth-child(2),
+.video .cartoon ul>li:hover img:nth-child(2){
   opacity:1;
   transition: all .2s linear;
 }
-
 .video .content ul>li a{
   z-index: 0;
 
 }
-.video .content .common ul>li a div{
+.video .content .common ul>li a div,
+.video .cartoon ul>li a div{
   z-index: 2;
   width: 100%;
   height: 100%;
@@ -287,15 +403,15 @@ body{
   top: 0;
   left: 0;
 }
-
-.video .content .common ul>li a div:hover{
+.video .content .common ul>li a div:hover,
+.video .cartoon ul>li a div:hover{
   box-shadow:0px 0px 5px 5px  #348bd1 inset;
 }
-
 .video .content .introduce>ul>li:hover{
   border-image: linear-gradient(#8c66c6,#bdebf3) 30 30;
 }
-.video .content .common>ul>li{
+.video .content .common>ul>li,
+.cartoon ul>li{
   width:24%;
   padding: 4px;
   background:#254771;
@@ -304,8 +420,8 @@ body{
   overflow: hidden;
   z-index: 2;
 }
-
-.video .content .common>ul>li span{
+.video .content .common>ul>li span,
+.cartoon ul>li span{
     display: inline-block;
     line-height: 2;
     font-size: 1em;
@@ -321,10 +437,10 @@ body{
     z-index: 2;
     transition: all .1s linear ;
 }
-
-
-
-
+.cartoon ul>li:hover span{
+   bottom:0;
+  transition: all .1s linear ;
+}
 .video .content .common>ul>li span.active{
   bottom:0;
   transition: all .1s linear ;
@@ -348,7 +464,7 @@ body{
   display: none;
 }
 .video .el-dialog{
-  width: 65%;
+  width: 900px;
 }
 .video .el-dialog__body{
   padding: 0;
@@ -366,6 +482,7 @@ body{
   background-repeat:no-repeat;
   opacity: .6;
   padding-bottom: 1em;
+  z-index: 10;
 }
 .video .vjs-custom-skin > .video-js:hover .vjs-big-play-button{
   background-color: #000;
@@ -374,13 +491,13 @@ body{
 .video .el-dialog__body{
   box-shadow:0 0 3px 3px #8c66c6;
 }
-
 .video .vjs-icon-play:before, 
 .video .video-js .vjs-big-play-button .vjs-icon-placeholder:before,
  .video .video-js .vjs-play-control .vjs-icon-placeholder:before {
     content: "";
+    /* display: none; */
 }
-.video .el-dialog__wrapper {overflow: hidden;}
+/* .video .el-dialog__wrapper {overflow: hidden;} */
 
  .c-title {
     font-size: 54px;
@@ -392,8 +509,51 @@ body{
     width: 100%;
     position: relative;
 }
+.video .el-dialog__body canvas{
+  /* background: #8c66c6; */
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+  .video .el-dialog__body  .input-barrage{
+    height: 40px;
+    width: 700px;
+    position: absolute;
+    bottom: -60px;
+    left: 0;
+    border-radius: 10px;
+    opacity: .4;
+    outline: none;
+    border: #8c66c6;
+    box-shadow:0 0 3px 3px #8c66c6;
+    transition: all .5s linear;
+    font-size: 20px
 
-
+  }
+  .video .el-dialog__body  .input-barrage:hover{
+    opacity: 1;
+    transition: all .5s linear;
+  }
+  .video .el-dialog__body  .send{
+    height: 40px;
+    width: 100px;
+    position: absolute;
+    right: 0;
+    border-radius: 5px;
+    bottom: -60px;
+    opacity: .4;
+    border: #8c66c6;
+    box-shadow:0 0 3px 3px #8c66c6;
+    transition: all .5s linear;
+    font-size: 20px
+  }
+.video .el-dialog__body  .send:hover{
+ opacity: 1;
+  transition: all .5s linear;
+}
+.video .vjs-control-bar{
+  z-index: 10;
+}
 
 </style>
 
