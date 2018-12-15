@@ -49,8 +49,10 @@
 </video-player>
 
 <canvas width="900px" height="460px"></canvas>
-
-    <input class="input-barrage" v-model="barrageInput" type="text"><button @click="SendBarrage" class="send">发射</button>
+<span class="barrage-body" :class="{move:barrageSend.move,pause:barrageSend.pause,play:barrageSend.play}">{{barrageSend.value}}</span>
+<input class="input-barrage" v-model="barrage.input" type="text">
+<button @click="SendBarrage" class="send"
+>发射</button>
   
 </el-dialog>
 
@@ -284,15 +286,15 @@ mounted(){
                 }
                 video.addEventListener('pause',()=>{
                                       clearInterval(timer);
-                                      this.barrage.pause=true;
-                                      this.barrage.play=false;
+                                      this.barrageSend.pause=true;
+                                      this.barrageSend.play=false;
                                    });
                 video.addEventListener('play',()=>{
                                   // barrage_load ();
                                   console.log(this.dialogVisible)
                                   barrage_load();
-                                  this.barrage.pause=false;
-                                  this.barrage.play=false;
+                                  this.barrageSend.pause=false;
+                                  this.barrageSend.play=false;
                                    });
                                    
             // }
@@ -329,9 +331,9 @@ mounted(){
     SendBarrage(){
       //发送到服务器
       //发到屏幕
-     this.barrage.value=this.barrage.input;
-     this.barrageInput="";
-     this.move=true;
+     this.barrageSend.value=this.barrageSend.input;
+     this.barrageSend.input="";
+     this.barrageSend.move=true;
 
 
 
