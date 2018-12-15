@@ -50,7 +50,7 @@
 
 <canvas width="900px" height="460px"></canvas>
 <span class="barrage-body" :class="{move:barrageSend.move,pause:barrageSend.pause,play:barrageSend.play}">{{barrageSend.value}}</span>
-<input class="input-barrage" v-model="barrage.input" type="text">
+<input class="input-barrage" v-model="barrageSend.input" type="text">
 <button @click="SendBarrage" class="send"
 >发射</button>
   
@@ -84,6 +84,14 @@
 <imgview :url="url.playerimg"></imgview>
 
 <h3 class="c-title">壁纸</h3>
+
+
+
+<div class="homelist">
+  <ul>
+    <li v-for="(item,index) in homelist" :key="index">{{item.title}}</li>
+  </ul>
+</div>
 
 </div>
 
@@ -146,13 +154,21 @@ components:{
     barrageSend:{
       input:"",
       value:"",
-      play:false,
+      play:"",
       pause:false,
       move:false
 
       
 
-    }
+    },
+    homelist:[
+      {title:"视频",url:""},
+      {title:"官方",url:""},
+      {title:"游戏截图",url:""},
+      {title:"玩家作品",url:""},
+      {title:"壁纸",url:""},
+      {title:"素材",url:""},
+    ]
           }
   },
 
@@ -294,7 +310,8 @@ mounted(){
                                   console.log(this.dialogVisible)
                                   barrage_load();
                                   this.barrageSend.pause=false;
-                                  this.barrageSend.play=false;
+                                  // this.barrageSend.play=true;
+                                  // this.barrageSend.move=true;
                                    });
                                    
             // }
@@ -331,9 +348,15 @@ mounted(){
     SendBarrage(){
       //发送到服务器
       //发到屏幕
-     this.barrageSend.value=this.barrageSend.input;
-     this.barrageSend.input="";
-     this.barrageSend.move=true;
+      this.barrageSend.value=this.barrageSend.input;
+      this.barrageSend.input="";
+      this.barrageSend.move=true;
+      // if(this.barrageSend.play){
+      
+      // // setTimeout(()=>{this.barrageSend.move=false},6000)
+      // }
+      
+    
 
 
 
@@ -363,6 +386,43 @@ body{
     margin: 0;
     padding: 0;
 }
+
+.video .homelist ul{
+list-style: none;
+    position: fixed;
+    top: 50%;
+    margin-top: -150px;
+    right: -85px;
+    z-index: 999;
+    width: 140px;
+    display: block;
+}
+.video .homelist ul li{
+    height: 47px;
+    vertical-align: middle;
+    margin-bottom: 3px;
+    width: 140px;
+    background: #271b5e;
+    padding: 0;
+    position: relative;
+    text-align: left;
+    left: 0;
+    -webkit-transition: left .2s ease 0s;
+    transition: left .2s ease 0s;
+    color: #fff;
+    font-size: 14px;
+    -webkit-transform: skew(-.25rad);
+    transform: skew(-.25rad);
+    line-height: 47px;
+    border-radius: 7px;
+}
+
+.video .homelist ul li:hover{
+  background: #348bd1;;
+  cursor: pointer;
+  left:-50px;
+}
+
 
 .video{
   
@@ -598,19 +658,20 @@ body{
     border: #8c66c6;
     box-shadow:0 0 3px 3px #8c66c6;
     transition: all .5s linear;
-    font-size: 20px
+    font-size: 20px;
+    display: block;
   }
 .video .el-dialog__body  .send:hover{
  opacity: 1;
   transition: all .5s linear;
 }
 .video .barrage-body{
-left: 900px;
-position: absolute;
-top: 0;
-z-index: 10;
-color:red;
-font-size: 20px;
+  left: 900px;
+  position: absolute;
+  top: 0;
+  z-index: 10;
+  color:red;
+  font-size: 20px;
  /* transition: all 7s linear; */
 }
 
@@ -630,6 +691,7 @@ font-size: 20px;
   animation: moved 6s linear;
   /* transition: all 7s linear; */
   left:-100px;
+  border: white 1px solid;
 
 }
   .video .barrage-body.pause {
@@ -637,7 +699,7 @@ font-size: 20px;
   }
 
   .video .barrage-body.play {
-    animation: mymove 5s infinite ease;
+    animation: moved 6s linear;
   }
 
 </style>
