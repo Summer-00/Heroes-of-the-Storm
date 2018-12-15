@@ -49,8 +49,10 @@
 </video-player>
 
 <canvas width="900px" height="460px"></canvas>
-
-    <input class="input-barrage" v-model="barrageInput" type="text"><button @click="SendBarrage" class="send">发射</button>
+<span class="barrage-body" :class="{move:barrage.move,pause:barrage.pause,play:barrage.play}">{{barrage.value}}</span>
+<input class="input-barrage" v-model="barrage.input" type="text">
+<button @click="SendBarrage" class="send"
+>发射</button>
   
 </el-dialog>
 
@@ -141,7 +143,16 @@ components:{
           fullscreenToggle: true  //全屏按钮
         }
     },
-    barrageInput:""
+    barrageSend:{
+      input:"",
+      value:"",
+      play:false,
+      pause:false,
+      move:false
+
+      
+
+    }
           }
   },
 
@@ -206,14 +217,14 @@ mounted(){
       this.dialogVisible=true;
       this.playerOptions.sources[0].src=item;
       console.log(this.playerOptions.sources[0].src),
-       this.barrage()
+      this.barrage()
       
     },
     barrage(){
 
         this.axios.get("http://127.0.0.1:5000/api/barrage?av=1").then(res=>{
               var body=res.data;
-                var tg=this.dialogVisible;
+                // var tg=this.dialogVisible;
                 console.log(res);            
                 //监听播放,打印弹幕
                 var cav=document.querySelector("canvas");//jq对象转换为js对象
@@ -228,9 +239,15 @@ mounted(){
                 }
                 var barrage_h=1;
                 var timer="";
-              
-                function barrage_load(){
-                    timer=setInterval(function(){
+                  // console.log(this.dialogVisible);
+                  
+                  
+               var barrage_load=()=>{
+                  // console.log(this.dialogVisible);
+                  
+                    timer=setInterval(()=>{
+                      console.log(this.dialogVisible);
+                  
                       console.log("timer");
                         ctx.clearRect(0,0,900,460);
                         for(let i =0;i<body.length;i++){
@@ -255,22 +272,50 @@ mounted(){
                                 if(barrage_h==10){
                                     barrage_h=0
                             }
+                        if(!this.dialogVisible){
+                        clearInterval(timer);
+                        ctx.clearRect(0,0,900,460)
+                      }
                                 arr[i]++;
                                 if(arr[i]>900+ctx.measureText(body[i].barrage).width)
                                 {body[i].v_time=2000000000000000}
-                                console.log(arr,arr2);
+                                // console.log(arr,arr2);
                             }
                         }
                     },10);
                 }
-                video.addEventListener('pause',function(){
+                video.addEventListener('pause',()=>{
                                       clearInterval(timer);
+                                      this.barrage.pause=true;
+                                      this.barrage.play=false;
                                    });
-                video.addEventListener('play',function(){
-                                  barrage_load ();
+                video.addEventListener('play',()=>{
+                                  // barrage_load ();
+                                  console.log(this.dialogVisible)
+                                  barrage_load();
+                                  this.barrage.pause=false;
+                                  this.barrage.play=false;
                                    });
                                    
             // }
+            // console.log(this.dialogVisible);
+
+
+// Object.defineProperty(this, 'dialogVisible', {
+//     get: function() { //取值的时候会触发
+//         // console.log('get: ', dialogVisible);  
+//         return dialogVisible;
+//     },
+//     set: function(value) { //更新值的时候会触发
+//          if(!value){
+//            clearInterval(timer);
+//          };
+//          dialogVisible=value;
+//         console.log('set: ',value); 
+//     }
+// })
+
+            
 
 
 
@@ -283,10 +328,14 @@ mounted(){
         //    });
 
     },
-    BarrageSend(){
+    SendBarrage(){
       //发送到服务器
       //发到屏幕
-      var barrage=this.barrageInput;
+     this.barrage.value=this.barrage.input;
+     this.barrageInput="";
+     this.move=true;
+
+
 
     }
  }
@@ -490,6 +539,7 @@ body{
 }
 .video .el-dialog__body{
   box-shadow:0 0 3px 3px #8c66c6;
+  overflow: hidden;
 }
 .video .vjs-icon-play:before, 
 .video .video-js .vjs-big-play-button .vjs-icon-placeholder:before,
@@ -498,6 +548,9 @@ body{
     /* display: none; */
 }
 /* .video .el-dialog__wrapper {overflow: hidden;} */
+.video .vjs-control-bar{
+  z-index: 10;
+}
 
  .c-title {
     font-size: 54px;
@@ -551,9 +604,41 @@ body{
  opacity: 1;
   transition: all .5s linear;
 }
-.video .vjs-control-bar{
-  z-index: 10;
+.video .barrage-body{
+left: 900px;
+position: absolute;
+top: 0;
+z-index: 10;
+color:red;
+font-size: 20px;
+ /* transition: all 7s linear; */
 }
+
+@keyframes moved{
+  0% {
+    left:900px ;
+  }
+  50%{
+    left: 400px;
+  }
+  100%{
+    left:-100px;
+  }
+
+}
+.video .barrage-body.move{
+  animation: moved 6s linear;
+  /* transition: all 7s linear; */
+  left:-100px;
+
+}
+  .video .barrage-body.pause {
+    animation-play-state: paused;
+  }
+
+  .video .barrage-body.play {
+    animation: mymove 5s infinite ease;
+  }
 
 </style>
 
