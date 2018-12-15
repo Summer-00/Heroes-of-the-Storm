@@ -49,10 +49,8 @@
 </video-player>
 
 <canvas width="900px" height="460px"></canvas>
-<span class="barrage-body" :class="{move:barrage.move,pause:barrage.pause,play:barrage.play}">{{barrage.value}}</span>
-<input class="input-barrage" v-model="barrage.input" type="text">
-<button @click="SendBarrage" class="send"
->发射</button>
+
+    <input class="input-barrage" v-model="barrageInput" type="text"><button @click="SendBarrage" class="send">发射</button>
   
 </el-dialog>
 
