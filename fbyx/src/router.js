@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Video from './views/Video.vue'
+import News from './views/News.vue'
 
 Vue.use(Router)
 
@@ -24,6 +25,11 @@ export default new Router({
       path:'/',
       name:'video',
       component:Video
+    },
+    {
+      path:'/news',
+      name:'news',
+      component:News
     }
   ]
 })
