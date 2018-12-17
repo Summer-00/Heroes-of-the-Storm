@@ -85,6 +85,41 @@ router.get("/getgameimg",(req,res)=>{
 })
 
 
+router.get("/getnews",(req,res)=>{
+    var num= parseInt(req.query.num);//页码
+    var size=parseInt(req.query.size); //大小
+    var object=parseInt(req.query.newsclass); 
+    console.log(object);
+    if(!num){num=1};
+    if(!size){size=12};
+    var obj={};
+    var flag=0
+    var sql="SELECT count(id)AS c FROM news WHERE newsclass=?"
+    pool.query(sql,[object],(err,result)=>{
+        console.log(result)
+     var count = Math.ceil(result[0].c/size);
+     flag+=50;
+        obj.count=count;
+        if(flag==100){
+            res.send(obj)
+
+        }
+    })
+    var sql="SELECT newstitle,newscontent,newsimg,newscommit,newstime FROM news WHERE newsclass=? LIMIT ?,? "
+    var offset=parseInt((num-1)*size);
+    pool.query(sql,[object,offset,size],(err,result)=>{
+        if(err)throw err;
+        flag+=50;
+        obj.data=result;
+        if(flag==100){
+            res.send(obj)
+        }
+    })
+
+    
+})
+
+
 //弹幕
 router.get("/barrage",(req,res)=>{
     var sql="SELECT * FROM barrage WHERE av=?";
