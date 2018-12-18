@@ -9,7 +9,7 @@
       <li v-for="item in first"  :key="item.id">
         <a href="javascript:;"  @click="play(item.video_url)">
           <img :src="item.img_url" alt="">
-        <img  src="http://127.0.0.1:5000/video_img/about.png" alt="">
+        <img  src="http://127.0.0.1:3000/ymy/video_img/about.png" alt="">
         <span>{{item.title}}</span>
       
         </a>
@@ -24,7 +24,7 @@
        <li v-for="(item,index) in list" :key="item.id"  @mouseenter="ShowSpan(index)"           @mouseleave="HideSpan()">
          <a href="javascript:;" @click="play(item.video_url)" >
         <img v-lazy="item.img_url" alt="">
-        <img src="http://127.0.0.1:5000/video_img/video_play.png" alt="">
+        <img src="http://127.0.0.1:3000/ymy/video_img/video_play.png" alt="">
         <span :class="{active:spanActive==index}">{{item.title}}</span>
           <div></div>
         </a>
@@ -64,7 +64,7 @@
        <li v-for="(item,index) in cartoon" :key="index">
          <a :href="item.url" target="_blank">
         <img v-lazy="item.img" alt="">
-        <img src="http://127.0.0.1:5000/video_img/cartoon.png" alt="">
+        <img src="http://127.0.0.1:3000/ymy/video_img/cartoon.png" alt="">
         <span>{{item.title}}</span>
         <div></div>
         </a>
@@ -112,16 +112,16 @@ components:{
     Count:1,
     list:[],
     cartoon:[
-      { title:"漫画01 - 乌鸦王的崛起", img:"http://127.0.0.1:5000/cartoon/cartoon1.jpg",url:"http://127.0.0.1:5000/cartoon/01.pdf"},
-      { title:"漫画02 - 风暴的秘密", img:"http://127.0.0.1:5000/cartoon/cartoon2.jpg",url:"http://127.0.0.1:5000/cartoon/02.pdf"},
-      { title:"漫画03 - 君冠城的陨落", img:"http://127.0.0.1:5000/cartoon/cartoon3.jpg",url:"http://127.0.0.1:5000/cartoon/03.pdf"},
-      { title:"漫画04 - 奥菲娅", img:"http://127.0.0.1:5000/cartoon/cartoon4.jpg",url:"http://127.0.0.1:5000/cartoon/04.pdf"},
+      { title:"漫画01 - 乌鸦王的崛起", img:"http://127.0.0.1:3000/ymy/cartoon/cartoon1.jpg",url:"http://127.0.0.1:3000/ymy/cartoon/01.pdf"},
+      { title:"漫画02 - 风暴的秘密", img:"http://127.0.0.1:3000/ymy/cartoon/cartoon2.jpg",url:"http://127.0.0.1:3000/ymy/cartoon/02.pdf"},
+      { title:"漫画03 - 君冠城的陨落", img:"http://127.0.0.1:3000/ymy/cartoon/cartoon3.jpg",url:"http://127.0.0.1:3000/ymy/cartoon/03.pdf"},
+      { title:"漫画04 - 奥菲娅", img:"http://127.0.0.1:3000/ymy/cartoon/cartoon4.jpg",url:"http://127.0.0.1:3000/ymy/cartoon/04.pdf"},
 
     ],
     first:[],
     url:{
-      gameimg:"http://127.0.0.1:5000/api/getgameimg?sqlname=gameimg&size=12&num=",
-      playerimg:"http://127.0.0.1:5000/api/getgameimg?sqlname=playerimg&size=12&num="
+      gameimg:"http://127.0.0.1:3000/api/getgameimg?sqlname=gameimg&size=12&num=",
+      playerimg:"http://127.0.0.1:3000/api/getgameimg?sqlname=playerimg&size=12&num="
     },
     btnActive:false,
     spanActive:-1,
@@ -197,7 +197,7 @@ mounted(){
  methods:{
    introduce()
     {
-     var url="http://127.0.0.1:5000/api/getabout";
+     var url="http://127.0.0.1:3000/api/getabout";
      this.axios.get(url).then(res=>{
        console.log(res);
        this.first=res.data;
@@ -206,7 +206,7 @@ mounted(){
 
     common(){
       this.Num++;  
-     var url="http://127.0.0.1:5000/api/getvideo?size=12&num="+this.Num;
+     var url="http://127.0.0.1:3000/api/getvideo?size=12&num="+this.Num;
      this.axios.get(url).then(res=>{
        console.log(res);
         this.list=this.list.concat(res.data.data);
@@ -238,7 +238,7 @@ mounted(){
     },
     barrage(){
 
-        this.axios.get("http://127.0.0.1:5000/api/barrage?av=1").then(res=>{
+        this.axios.get("http://127.0.0.1:3000/api/barrage?av=1").then(res=>{
               var body=res.data;
                 // var tg=this.dialogVisible;
                 console.log(res);            
@@ -357,7 +357,7 @@ mounted(){
       //           v_time=v_time;
       //           text_color=barrage_color
 
-      // url="http://127.0.0.1:5000/api/input_barrage?"
+      // url="http://127.0.0.1:3000/api/input_barrage?"
       // this.axios.get(url)
 
 
@@ -403,6 +403,7 @@ body{
     background-color: rgb(17, 4, 30);
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 
 
@@ -411,7 +412,7 @@ list-style: none;
     position: fixed;
     top: 50%;
     margin-top: -150px;
-    right: -85px;
+    left: -85px;
     z-index: 999;
     width: 140px;
     display: block;
@@ -419,12 +420,12 @@ list-style: none;
 .video .homelist ul li{
     height: 47px;
     vertical-align: middle;
-    margin-bottom: 3px;
+    margin-bottom: 10px;
     width: 140px;
     background: #271b5e;
     padding: 0;
     position: relative;
-    text-align: left;
+    text-align: right;
     left: 0;
     -webkit-transition: left .2s ease 0s;
     transition: left .2s ease 0s;
@@ -434,21 +435,22 @@ list-style: none;
     transform: skew(-.25rad);
     line-height: 47px;
     border-radius: 7px;
-    text-indent: 5px
+    text-indent: -5px;
 }
 
 .video .homelist ul li:hover{
   background: #348bd1;;
   cursor: pointer;
-  left:-50px;
+  left:50px;
 }
 
 
 .video{
   
-  background: #0d0119 url(http://127.0.0.1:5000/video_img/1_images_media_v2_bg_1.jpg) top center no-repeat;
+  background: #0d0119 url(http://127.0.0.1:3000/ymy/video_img/1_images_media_v2_bg_1.jpg) top center no-repeat;
   margin: 0;
   padding: 0;
+  padding-top: 150px;
 }
  .video .content,
  .video .cartoon {
@@ -610,5 +612,131 @@ list-style: none;
 }
 
 
+</style>
+<style>
+body{
+  margin: 0;
+  padding: 0;
+}
+
+.video .el-dialog{
+  width: 900px;
+}
+.video .el-dialog__body{
+  padding: 0;
+}
+.video .el-dialog__header{
+  /* height: 0; */
+  padding: 0
+}
+.video .vjs-custom-skin > .video-js .vjs-big-play-button{
+  width: 100px!important;
+  height: 100px!important;
+  border-radius:50%;
+  border: 0 ; 
+  background-image: url(http://127.0.0.1:3000/ymy/video_img/video_play.png) ;
+  background-repeat:no-repeat;
+  opacity: .6;
+  padding-bottom: 1em;
+  z-index: 10;
+}
+.video .vjs-custom-skin > .video-js:hover .vjs-big-play-button{
+  background-color: #000;
+  opacity: 1;
+}
+.video .el-dialog__body{
+  box-shadow:0 0 3px 3px #8c66c6;
+  overflow: hidden;
+}
+.video .vjs-icon-play:before, 
+.video .video-js .vjs-big-play-button .vjs-icon-placeholder:before,
+ .video .video-js .vjs-play-control .vjs-icon-placeholder:before {
+    content: "";
+    /* display: none; */
+}
+/* .video .el-dialog__wrapper {overflow: hidden;} */
+.video .vjs-control-bar{
+  z-index: 10;
+}
+
+.video .el-dialog__body canvas{
+  /* background: #8c66c6; */
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+  .video .el-dialog__body  .input-barrage{
+    height: 40px;
+    width: 700px;
+    position: absolute;
+    bottom: -60px;
+    left: 0;
+    border-radius: 10px;
+    opacity: .4;
+    outline: none;
+    border: #8c66c6;
+    box-shadow:0 0 3px 3px #8c66c6;
+    transition: all .5s linear;
+    font-size: 20px
+
+  }
+  .video .el-dialog__body  .input-barrage:hover{
+    opacity: 1;
+    transition: all .5s linear;
+  }
+  .video .el-dialog__body  .send{
+    height: 40px;
+    width: 100px;
+    position: absolute;
+    right: 0;
+    border-radius: 5px;
+    bottom: -60px;
+    opacity: .4;
+    border: #8c66c6;
+    box-shadow:0 0 3px 3px #8c66c6;
+    transition: all .5s linear;
+    font-size: 20px;
+    display: block;
+  }
+.video .el-dialog__body  .send:hover{
+ opacity: 1;
+  transition: all .5s linear;
+}
+.video .barrage-body{
+  left: 900px;
+  position: absolute;
+  top: 0;
+  z-index: 10;
+  color:red;
+  font-size: 20px;
+ /* transition: all 7s linear; */
+}
+
+@keyframes moved{
+  0% {
+    left:900px ;
+  }
+  50%{
+    left: 400px;
+  }
+  100%{
+    left:-100px;
+  }
+
+}
+.video .barrage-body.move{
+  animation: moved 6s linear;
+  /* transition: all 7s linear; */
+  left:-100px;
+  border: white 1px solid;
+
+}
+  .video .barrage-body.pause {
+    animation-play-state: paused;
+  }
+
+  .video .barrage-body.play {
+    animation: moved 6s linear;
+  }
 </style>
 

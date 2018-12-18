@@ -58,7 +58,7 @@ watch:{
 methods:{
     getNews(){
      this.Num++;  
-     var url="http://127.0.0.1:5000/api/getnews?size=12&num="+this.Num+"&newsclass="+this.newsclass;
+     var url="http://127.0.0.1:3000/api/getnews?size=12&num="+this.Num+"&newsclass="+this.newsclass;
      this.axios.get(url).then(res=>{
        console.log(res);
         this.list=this.list.concat(res.data.data);
@@ -107,6 +107,7 @@ margin: 0 auto;
 .container ul{
     list-style: none;
     padding: 0;
+    margin-top: 20px
 }
 .container ul li{
 margin-bottom: 20px;

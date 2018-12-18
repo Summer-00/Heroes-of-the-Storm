@@ -4,7 +4,7 @@
        <li v-for="(item,index) in list" :key="item.id">
          <a href="javascript:;" @click="play(item.bgimg_url,index)" >
         <img v-lazy="item.gameimg_url" alt="">
-        <img src="http://127.0.0.1:5000/video_img/cartoon.png" alt="">
+        <img src="http://127.0.0.1:3000/ymy/video_img/cartoon.png" alt="">
         <span>{{item.title}}</span>
         <div> </div>
         </a>
@@ -220,7 +220,7 @@ export default{
   /* background: red; */
   top: 50%;
   margin-top:-50px;
-   background-image: url(http://127.0.0.1:5000/video_img/move.png);
+   background-image: url(http://127.0.0.1:3000/ymy/video_img/move.png);
 }
 .common .el-dialog .el-dialog__body>a:nth-child(2):hover{
   background-position: 0% 50%;
@@ -236,7 +236,7 @@ export default{
   /* background: red; */
   top: 50%;
   margin-top:-50px;
-  background-image: url(http://127.0.0.1:5000/video_img/move.png);
+  background-image: url(http://127.0.0.1:3000/ymy/video_img/move.png);
   background-position: 100% 0%;
   
 }
