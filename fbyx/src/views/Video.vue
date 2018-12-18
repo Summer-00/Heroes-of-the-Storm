@@ -1,7 +1,7 @@
 <template>
 
   <div class="video">
-  <h1>video</h1>
+  <!-- <h1>video</h1> -->
   <!-- <div class="video">  -->
     <div class="content">
            <div class="introduce">
@@ -346,11 +346,29 @@ mounted(){
 
     },
     SendBarrage(){
-      //发送到服务器
-      //发到屏幕
-      this.barrageSend.value=this.barrageSend.input;
+      
+      if(this.barrageSend.input!==""){
+         this.barrageSend.value=this.barrageSend.input;
+         //发送到服务器
+      //           av="";
+      //           barrage=this.barrageSend.value;
+      //           c_time=day.toLocaleString('chinese', { hour12: false });
+      //           user_name="Tourist";
+      //           v_time=v_time;
+      //           text_color=barrage_color
+
+      // url="http://127.0.0.1:5000/api/input_barrage?"
+      // this.axios.get(url)
+
+
+       //发到屏幕
+     
       this.barrageSend.input="";
       this.barrageSend.move=true;
+      }
+
+     
+
       // if(this.barrageSend.play){
       
       // // setTimeout(()=>{this.barrageSend.move=false},6000)
@@ -441,6 +459,7 @@ list-style: none;
 } 
 .video .content .introduce>ul,.video .common>ul,
 .video .cartoon>ul{
+  margin-top: 0;
   width: 100%;
   padding: 1%;
   list-style: none;
@@ -587,6 +606,7 @@ list-style: none;
     text-shadow: 0 0 10px #0078ff, 0 0 10px #0078ff;
     width: 100%;
     position: relative;
+    margin-bottom:0 
 }
 
 

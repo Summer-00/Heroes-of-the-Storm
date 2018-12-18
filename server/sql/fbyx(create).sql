@@ -33,12 +33,12 @@ CREATE TABLE `playerimg` (
 ) ;
 CREATE TABLE `news` (
   `id` int(11) PRIMARY KEY AUTO_INCREMENT,
-  `newsclass` varchar(225) NOT NULL,
+  `newsclass` int(11) NOT NULL,
   `newstitle` varchar(225) NOT NULL,
  `newscontent` varchar(225) NOT NULL,
  `newsimg` varchar(225) NOT NULL,
  `newscommit` varchar(225) NOT NULL,
- `newstime` varchar(225) NOT NULL,
+ `newstime` varchar(225) NOT NULL
 ) ;
 
 INSERT INTO `news` (`id`, `newsclass`, `newstitle`, `newscontent`, `newsimg`, `newscommit`, `newstime`) VALUES 

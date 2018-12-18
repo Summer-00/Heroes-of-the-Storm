@@ -128,6 +128,37 @@ router.get("/barrage",(req,res)=>{
          else res.send(result);
      })
  });
+//输入弹幕
+router.get("/input_barrage",(req,res)=>{
+    var sql="INSERT INTO barrage SET ?";
+        pool.query(sql,req.body,(err,result)=>{
+            if(err)throw err;
+            else{res.send({"OK":0});
+                //res.send({"OK":0});
+
+                // pool.query("SELECT COUNT(id) AS c FROM `barrage` WHERE av=?",[req.body.av],(err,result)=>{
+
+
+                //     if(err) throw  err;
+                //     else{
+                //         result=JSON.stringify(result);
+                //         result = JSON.parse(result);
+                //         var length=parseInt(result[0].c);
+
+                //         pool.query("UPDATE `player` SET `barrage_` = ? WHERE `player`.`id` = ?",
+                //                     [length,req.body.av],(err,result)=>{
+
+                //                 if(err) throw  err;
+                //                 else{
+                //                     res.send({"OK":0})
+                //                 }
+                //             })
+                //     }
+                // })
+            }
+        })
+
+});
 
 //导出路由
 module.exports=router;

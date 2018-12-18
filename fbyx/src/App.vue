@@ -13,6 +13,7 @@ body{
   margin: 0;
   padding: 0;
 }
+
 .video .el-dialog{
   width: 900px;
 }

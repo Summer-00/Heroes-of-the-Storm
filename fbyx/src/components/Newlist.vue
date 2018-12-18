@@ -35,20 +35,22 @@ data() {
     return {
         list:[],
         Num:0,
-        btnActive:false
+        btnActive:true
 
     }
 },
 props:["newsclass"],
 created(){
-    this.getNews()
+    this.getNews();
+    
 
 },
 watch:{
     newsclass:function(){
         this.list=[];
          this.Num=0;
-         this.btnActive=false;
+         this.btnActive=true;
+        //  this.btnActive=false;
             this.getNews();
        
     }
@@ -65,6 +67,8 @@ methods:{
          console.log(this.Num)
          if(this.Count==this.Num){
            this.btnActive=true;
+         }else{
+             this.btnActive=false;
          }
          
      })

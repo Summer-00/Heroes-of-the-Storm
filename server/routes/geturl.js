@@ -5,7 +5,7 @@ var router=express.Router();
 
 
 
-//添加api到数据库 //获得图和视频地址的时候用一下，可以不管它
+//添加数据到数据库 //获得图和视频地址的时候用一下，可以不管它
 router.post("/postapi",(req,res)=>{
     // console.log(req.body);
     var video=req.body;
